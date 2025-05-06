@@ -1,0 +1,116 @@
+🚀 DevOps CI/CD Pipeline Task – Node.js App with Jenkins
+========================================================
+
+This project is a submission for the DevOps Internship Task at JarNox. It demonstrates a basic CI/CD pipeline setup using a Node.js application deployed via Jenkins on a local or cloud-based server, with GitHub Actions replaced by a manual Jenkins pipeline and webhook integration.
+
+* * *
+
+🛠️ Project Stack
+-----------------
+
+*   **App:** Node.js (Express)
+*   **CI/CD Tool:** Jenkins (Installed on Ubuntu VM)
+*   **Webhook Tunneling:** ngrok
+*   **Repository Hosting:** Codeberg (source), GitHub (webhook trigger)
+
+* * *
+
+📁 Project Structure
+--------------------
+
+📦 nodejswebhook
+ ┣ 📜 app.js
+ ┣ 📜 package.json
+ ┣ 📜 Jenkinsfile 
+ ┗ 📜 README.md
+
+* * *
+
+🔧 Local Setup Instructions
+---------------------------
+
+### 1\. Clone the Repository
+
+    git clone https://github.com/trivediayush/nodejswebhook.git
+    cd nodejswebhook
+    npm install
+    node app.js
+
+This runs the app locally at `http://localhost:3000`, returning **"Hello World"** on the root route.
+
+* * *
+
+⚙️ Jenkins Setup (Ubuntu Server)
+--------------------------------
+
+1.  Install Java (if not already installed):  
+    `sudo apt install openjdk-17-jdk`
+2.  Install Jenkins:  
+    `wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -`  
+    `sudo apt-add-repository "deb https://pkg.jenkins.io/debian-stable binary/"`  
+    `sudo apt update && sudo apt install jenkins`
+3.  Start Jenkins:  
+    `sudo systemctl start jenkins`  
+    `sudo systemctl enable jenkins`
+4.  Access Jenkins via browser:  
+    `http://your-server-ip:8080`
+5.  Install Suggested Plugins and Set Up Admin User
+
+* * *
+
+🔗 Expose Jenkins with ngrok
+----------------------------
+
+1.  Install ngrok:  
+    `sudo snap install ngrok`
+2.  Authenticate ngrok:  
+    `ngrok config add-authtoken <your_token>`
+3.  Start ngrok:  
+    `ngrok http 8080`
+4.  Copy the public URL (e.g. `https://abcd-1234.ngrok-free.app`)
+
+Your Jenkins webhook endpoint will be:
+
+    https://abcd-1234.ngrok-free.app/github-webhook/
+
+* * *
+
+🔁 GitHub Webhook Setup
+-----------------------
+
+1.  Open your repository on GitHub
+2.  Go to **Settings > Webhooks > Add Webhook**
+3.  Set the Payload URL to Jenkins webhook URL
+4.  Content type: `application/json`
+5.  Leave Secret blank (or configure if needed)
+6.  Choose **Just the push event**
+7.  Save
+
+* * *
+
+🚀 Jenkins Job Pipeline
+-----------------------
+
+Create a freestyle or pipeline job in Jenkins. If freestyle:
+
+1.  Source Code Management: Git
+2.  Repository URL: `https://github.com/trivediayush/nodejswebhook.git`
+3.  Build Triggers: Enable **GitHub hook trigger for GITScm polling**
+4.  Build Steps:
+
+*   `npm install`
+*   `node app.js` or restart a PM2 process if you're using one
+
+* * *
+
+✅ Result
+--------
+
+When you push code to GitHub, the webhook triggers Jenkins which pulls the latest code, installs dependencies, and restarts the Node.js app.
+
+* * *
+
+📬 Contact
+----------
+
+*   **Author:** Ayush Trivedi
